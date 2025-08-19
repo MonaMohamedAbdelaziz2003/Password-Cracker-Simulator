@@ -4,8 +4,7 @@ import itertools
 import string
 import time
 
-# ========== Password Cracking Algorithms ==========
-
+# Password Cracking Algorithms
 def brute_force(password, charset=string.ascii_lowercase + string.digits):
     attempts = 0
     start_time = time.time()
@@ -32,7 +31,10 @@ def dictionary_attack(password, dictionary):
         if word == password:
             return
 
-# ========== GUI ==========
+# GUI
+
+# نخزن الباسوردات اللي اتفكت قبل كده
+cracked_passwords = []
 
 def start_attack():
     global stop_flag
@@ -49,10 +51,12 @@ def start_attack():
     log_box.delete(1.0, tk.END)
     window.update()
 
+    #
+    dictionary = ["123456", "password", "letmein", "qwerty", "admin", "hello", "welcome"] + cracked_passwords
+
     if attack_type == "Brute Force":
         generator = brute_force(password)
     else:
-        dictionary = ["123456", "password", "letmein", "qwerty", "admin", "hello", "welcome"]
         generator = dictionary_attack(password, dictionary)
 
     for guess, attempts, elapsed in generator:
@@ -64,6 +68,10 @@ def start_attack():
 
         if guess == password:
             messagebox.showinfo("Success!", f"Password found: {guess}\nAttempts: {attempts}\nTime: {elapsed:.2f}s")
+            # ييخزن الباسورد اللي فكيناه ب الBrute Force
+            if attack_type == "Brute Force" and guess not in cracked_passwords:
+                cracked_passwords.append(guess)
+
             return
 
     messagebox.showerror("Failed", "Password not found in Dictionary!")
@@ -72,7 +80,9 @@ stop_flag = False
 def stop_attack():
     global stop_flag
     stop_flag = True
-# ========== Main Window ==========
+
+    
+# Main Window
 
 window = tk.Tk()
 window.title(" Password Cracker Simulator")
